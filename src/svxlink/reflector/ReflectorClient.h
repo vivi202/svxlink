@@ -58,8 +58,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 #include "ReflectorMsg.h"
 #include "ProtoVer.h"
-
-
 /****************************************************************************
  *
  * Forward declarations
@@ -425,11 +423,11 @@ class ReflectorClient
     bool txTransmit(char id) { return m_tx_map[id].transmit; }
 
     const Json::Value& nodeInfo(void) const { return m_node_info; }
+    void disconnect(void);
 
   private:
     using ClientIdRandomDist  = std::uniform_int_distribution<ClientId>;
     using ClientMap           = std::map<ClientId, ReflectorClient*>;
-
     static const uint16_t MIN_MAJOR_VER = 0;
     static const uint16_t MIN_MINOR_VER = 6;
 
@@ -488,7 +486,6 @@ class ReflectorClient
     void handleMsgError(std::istream& is);
     void sendError(const std::string& msg);
     void onDiscTimeout(Async::Timer *t);
-    void disconnect(void);
     void handleHeartbeat(Async::Timer *t);
     std::string lookupUserKey(const std::string& callsign);
 
