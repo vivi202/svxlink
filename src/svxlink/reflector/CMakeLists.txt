@@ -25,6 +25,9 @@ set(LIBS asynccpp asyncaudio asynccore svxmisc ${LIBS})
 # Build the executable
 add_executable(svxreflector
   svxreflector.cpp Reflector.cpp ReflectorClient.cpp TGHandler.cpp
+  ReflectorLogger/ReflectorLoggerController.cpp  
+  ReflectorLogger/ZmqLogger.cpp 
+
 )
 target_link_libraries(svxreflector ${LIBS})
 set_target_properties(svxreflector PROPERTIES

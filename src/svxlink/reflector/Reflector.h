@@ -60,6 +60,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 #include "ProtoVer.h"
 #include "ReflectorClient.h"
+#include "ReflectorLogger/ReflectorLoggerController.h"
 
 
 /****************************************************************************
@@ -195,7 +196,7 @@ class Reflector : public sigc::trackable
     uint32_t                                        m_random_qsy_hi;
     uint32_t                                        m_random_qsy_tg;
     Async::TcpServer<Async::HttpServerConnection>*  m_http_server;
-
+    std::unique_ptr<ReflectorLoggerController> r;
     Reflector(const Reflector&);
     Reflector& operator=(const Reflector&);
     void clientConnected(Async::FramedTcpConnection *con);

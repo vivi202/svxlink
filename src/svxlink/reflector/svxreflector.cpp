@@ -76,8 +76,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 #include "version/SVXREFLECTOR.h"
 #include "Reflector.h"
-
-
+#include "ReflectorLogger/ReflectorLoggerController.h"
+#include "ReflectorLogger/ZmqLogger.h"
 /****************************************************************************
  *
  * Namespaces to use
@@ -435,6 +435,7 @@ int main(int argc, const char *argv[])
   }
 
   Reflector ref;
+  ReflectorLoggerController reflectorLogger(new ZmqLogger());
   if (ref.initialize(cfg))
   {
     app.exec();
