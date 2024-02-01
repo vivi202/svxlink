@@ -1,3 +1,4 @@
+set (CMAKE_CXX_STANDARD 17)
 # Find the popt library
 find_package(Popt REQUIRED)
 set(LIBS ${LIBS} ${POPT_LIBRARIES})
@@ -19,8 +20,8 @@ pkg_check_modules (JSONCPP REQUIRED jsoncpp)
 include_directories(${JSONCPP_INCLUDE_DIRS})
 set(LIBS ${LIBS} ${JSONCPP_LIBRARIES})
 
-#
-find_package(cppzmq)
+#zmq
+find_package(cppzmq REQUIRED)
 
 
 # Add project libraries
@@ -30,10 +31,16 @@ set(LIBS asynccpp asyncaudio asynccore svxmisc ${LIBS})
 add_executable(svxreflector
   svxreflector.cpp Reflector.cpp ReflectorClient.cpp TGHandler.cpp
   ReflectorLogger/ReflectorLoggerController.cpp ZmqLogger/ZmqLogger.cpp 
+  ReflectorAuth/ReflectorAuthController.cpp 
+  CfgAuthenticator/CfgAuthenticator.cpp DbAuthenticator/DbAuthenticator.cpp 
 )
 
 #ZMQ
 target_link_libraries(svxreflector cppzmq)
+
+
+
+target_link_libraries(svxreflector -lpqxx -lpq)
 
 target_link_libraries(svxreflector ${LIBS})
 set_target_properties(svxreflector PROPERTIES

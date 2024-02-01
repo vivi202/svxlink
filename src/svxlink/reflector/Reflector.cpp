@@ -54,8 +54,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  ****************************************************************************/
 
 #include "Reflector.h"
-#include "ReflectorClient.h"
-#include "TGHandler.h"
 
 
 /****************************************************************************
@@ -444,16 +442,26 @@ void Reflector::udpDatagramReceived(const IpAddress& addr, uint16_t port,
           ReflectorClient* talker = TGHandler::instance()->talkerForTG(tg);
           if (talker == 0)
           {
-            TGHandler::instance()->setTalkerForTG(tg, client);
-            talker = TGHandler::instance()->talkerForTG(tg);
+            //Check if client is allowed to talk.
+            if(ReflectorAuthController::GetInstance()->canTalk(tg,client->callsign())){
+              TGHandler::instance()->setTalkerForTG(tg, client);
+              talker = TGHandler::instance()->talkerForTG(tg);
+            }else{
+              client->setBlock(60);
+            }
           }
           if (talker == client)
           {
+            if(ReflectorAuthController::GetInstance()->canTalk(tg,client->callsign())){
             TGHandler::instance()->setTalkerForTG(tg, client);
             broadcastUdpMsg(msg,
                 ReflectorClient::mkAndFilter(
                   ReflectorClient::ExceptFilter(client),
                   ReflectorClient::TgFilter(tg)));
+            }else{
+              TGHandler::instance()->setTalkerForTG(tg, 0);
+              client->setBlock(60);
+            }
             //broadcastUdpMsgExcept(tg, client, msg,
             //    ProtoVerRange(ProtoVer(0, 6),
             //                  ProtoVer(1, ProtoVer::max().minor())));

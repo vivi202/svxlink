@@ -59,6 +59,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include "ReflectorClient.h"
 #include "Reflector.h"
 #include "TGHandler.h"
+#include "ReflectorAuth/ReflectorAuthController.h"
 /****************************************************************************
  *
  * Namespaces to use
@@ -455,7 +456,8 @@ void ReflectorClient::handleMsgAuthResponse(std::istream& is)
     return;
   }
 
-  string auth_key = lookupUserKey(msg.callsign());
+  //string auth_key = lookupUserKey(msg.callsign());
+  string auth_key = ReflectorAuthController::GetInstance()->lookupUserKey(msg.callsign());
   if (!auth_key.empty() && msg.verify(auth_key, m_auth_challenge))
   {
     vector<string> connected_nodes;

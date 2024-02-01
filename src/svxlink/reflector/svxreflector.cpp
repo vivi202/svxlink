@@ -54,7 +54,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include <cstring>
 #include <iostream>
 #include <iomanip>
-
+#include <memory>
 
 /****************************************************************************
  *
@@ -76,8 +76,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 #include "version/SVXREFLECTOR.h"
 #include "Reflector.h"
+
 #include "ReflectorLogger/ReflectorLoggerController.h"
 #include "ZmqLogger/ZmqLogger.h"
+#include "ReflectorAuth/ReflectorAuthController.h"
+#include "CfgAuthenticator/CfgAuthenticator.h"
+#include "DbAuthenticator/DbAuthenticator.h"
 /****************************************************************************
  *
  * Namespaces to use
@@ -434,9 +438,18 @@ int main(int argc, const char *argv[])
     stdin_watch->activity.connect(sigc::ptr_fun(&stdinHandler));
   }
 
-  Reflector ref;
+
+
+  //Reflector Logger
   ReflectorLoggerController reflectorLogger(new ZmqLogger());
-  
+  //Reflector Authentication
+  std::unique_ptr<IReflectorAuthenticator> cfgAuth(new CfgAuthenticator(&cfg));
+  std::unique_ptr<IReflectorAuthenticator> dbAuth(new DbAuthenticator(&cfg));
+
+  ReflectorAuthController::GetInstance()->addAuthenticator(cfgAuth);
+  ReflectorAuthController::GetInstance()->addAuthenticator(dbAuth);
+  Reflector ref;
+
   if (ref.initialize(cfg))
   {
     app.exec();

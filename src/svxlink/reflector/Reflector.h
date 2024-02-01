@@ -61,7 +61,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include "ProtoVer.h"
 #include "ReflectorClient.h"
 #include "ReflectorLogger/ReflectorLoggerController.h"
-
+#include "ReflectorAuth/ReflectorAuthController.h"
 
 /****************************************************************************
  *
@@ -76,15 +76,12 @@ namespace Async
 };
 
 class ReflectorMsg;
-class ReflectorUdpMsg;
-
-
+class ReflectorLoggerController;
 /****************************************************************************
  *
  * Forward declarations of classes inside of the declared namespace
  *
  ****************************************************************************/
-
 
 
 /****************************************************************************
