@@ -61,28 +61,52 @@ void DbAuthenticator::InitDb()
 
 const std::string DbAuthenticator::GetAuthKey(const std::string &callsign)
 {
-    pqxx::work tx{*dbConn};
-    auto res = tx.exec_prepared1("getAuthKey", callsign);
-    std::cout << res.size();
-    if (res.size() == 0)
-        return "";
-    return res.begin().c_str();
+    try{
+        pqxx::work tx{*dbConn};
+        auto res = tx.exec_prepared1("getAuthKey", callsign);
+        std::cout << res.size();
+        if (res.size() == 0)
+            return "";
+        return res.begin().c_str();
+    }catch(const std::exception& e){
+        dbConn.reset();
+        InitDb();
+    }
+    return "";
 }
 
 bool DbAuthenticator::canTalk(const std::string &callsign)
 {
-    pqxx::work tx{*dbConn};
-    auto res = tx.exec_prepared1("canTalk", callsign);
-    if(res.size() == 0)
-        return false;
-    return true;
+    try
+    {
+        pqxx::work tx{*dbConn};
+        auto res = tx.exec_prepared1("canTalk", callsign);
+        if(res.size() == 0)
+            return false;
+        return true;
+    }catch(const std::exception& e){
+        dbConn.reset();
+        InitDb();
+    }
+    return false;
 }
+    
+
 
 bool DbAuthenticator::isEnabled(const std::string &callsign)
 {
-    pqxx::work tx{*dbConn};
-    auto res = tx.exec_prepared1("isEnabled", callsign);
-    if (res.size() == 0)
-        return false;
-    return true;
+    try
+    {
+        pqxx::work tx{*dbConn};
+        auto res = tx.exec_prepared1("isEnabled", callsign);
+        if (res.size() == 0)
+            return false;
+        return true;
+    }
+    catch(const std::exception& e)
+    {
+        dbConn.reset();
+        InitDb();
+    }
+    return false;
 }
